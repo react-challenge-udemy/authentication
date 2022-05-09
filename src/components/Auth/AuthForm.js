@@ -6,7 +6,7 @@ import classes from './AuthForm.module.css';
 
 const AuthForm = () => {
 
-  const history= useHistory();
+  const history = useHistory();
 
   const emailInputRef = useRef();
   const passwordInputRef = useRef();
@@ -26,7 +26,7 @@ const AuthForm = () => {
     const enteredEmail = emailInputRef.current.value;
     const enteredpassword = passwordInputRef.current.value;
 
-   
+
 
 
     setIsLoading(true);
@@ -52,7 +52,7 @@ const AuthForm = () => {
       setIsLoading(false);
       if (res.ok) {
         return res.json();
-        console.log('succsess');
+        
       } else {
         return res.json().then((data) => {
 
@@ -65,11 +65,17 @@ const AuthForm = () => {
         })
       }
     }).then((data) => {
-      authCtx.login(data.idToken);
+
+      const expirationTime = new Date(
+        new Date().getTime() + +data.expiresIn * 1000
+      );
+      authCtx.login(data.idToken, expirationTime.toISOString());
       history.replace('/');
-      // console.log(data);
+
     }).catch(error => {
-      alert(error.message)
+
+      alert(error.message);
+
     });
 
 
